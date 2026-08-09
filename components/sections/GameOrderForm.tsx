@@ -89,20 +89,20 @@ export function GameOrderForm({ game, qrisUrl }: GameOrderFormProps) {
             </h3>
             <p className="text-[12px] text-muted">{nominals.length} pilihan</p>
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
             {nominals.map((n, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => setSelectedNominal(i)}
-                className={`rounded-2xl border bg-white/[.02] px-4 py-3.5 text-left transition ${
+                className={`rounded-xl border bg-white/[.02] px-3 py-3 text-left transition min-h-[44px] ${
                   selectedNominal === i
                     ? "border-violet bg-violet/10 shadow-[0_0_0_1px_rgba(139,109,255,.6),0_12px_30px_-18px_rgba(124,92,255,.9)]"
                     : "border-line hover:border-violet/50 hover:-translate-y-0.5"
                 }`}
               >
-                <p className="display text-[14.5px] font-bold">{n.nominal_label}</p>
-                <p className="mt-1 text-[12.5px] text-muted">{rupiah(n.price)}</p>
+                <p className="display text-[13px] sm:text-[14.5px] font-bold">{n.nominal_label}</p>
+                <p className="mt-0.5 text-[11px] sm:text-[12.5px] text-muted">{rupiah(n.price)}</p>
               </button>
             ))}
           </div>
