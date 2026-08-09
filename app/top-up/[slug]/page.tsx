@@ -87,6 +87,19 @@ export default async function TopUpPage({ params }: PageProps) {
   if (!result) notFound();
   const { game, db } = result;
 
+  let qrisUrl = "";
+  try {
+    const supabase = await import("@/lib/supabase-server").then((m) => m.createSupabaseServerClient());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await (supabase.from("settings") as any)
+      .select("value")
+      .eq("key", "qris_image_url")
+      .single();
+    if (data?.value && typeof data.value === "string") {
+      qrisUrl = data.value;
+    }
+  } catch {}
+
   const crumbs: BreadcrumbItem[] = [
     { label: "Home", href: "/" },
     { label: "Top Up", href: "/#games" },
@@ -134,7 +147,7 @@ export default async function TopUpPage({ params }: PageProps) {
 
         <section className="relative pb-6">
           <div className="max-w-[1180px] mx-auto px-5">
-            <GameOrderForm game={db} qrisUrl="" />
+            <GameOrderForm game={db} qrisUrl={qrisUrl} />
           </div>
         </section>
 
