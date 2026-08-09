@@ -5,12 +5,17 @@ import Link from "next/link";
 import { Header } from "@/components/sections/Header";
 import { Footer } from "@/components/sections/Footer";
 import { GameOrderForm } from "@/components/sections/GameOrderForm";
-import { Breadcrumb, breadcrumbJsonLd } from "@/components/ui/Breadcrumb";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import type { BreadcrumbItem } from "@/components/ui/Breadcrumb";
+import { breadcrumbJsonLd } from "@/lib/breadcrumb-json-ld";
 import { site } from "@/lib/site";
 import { GAMES } from "@/lib/games";
 import type { Game } from "@/lib/games";
 import type { DbGameWithNominals } from "@/types/game";
-import { rupiah } from "@/lib/format";
+
+function rp(n: number): string {
+  return "Rp" + n.toLocaleString("id-ID");
+}
 
 function buildGame(slug: string): { game: Game; db: DbGameWithNominals } | null {
   const g = GAMES.find((x) => x.slug === slug);
@@ -49,12 +54,10 @@ function gameFaqs(g: Game) {
   return [
     [`Berapa lama proses top up ${g.name}?`, `Setelah pembayaran QRIS terkonfirmasi, ${g.cur} diteruskan otomatis dan umumnya masuk ke akun dalam beberapa detik.`],
     [`Data apa yang dibutuhkan untuk top up ${g.name}?`, `Cukup ${pilih}. Playzora tidak pernah meminta password, OTP, atau akses login akun game.`],
-    [`Berapa pilihan nominal ${g.name} yang tersedia?`, `Tersedia sembilan pilihan nominal ${g.cur}, mulai dari ${rpah(g.nominals[0]?.price ?? 0)}.`],
+    [`Berapa pilihan nominal ${g.name} yang tersedia?`, `Tersedia ${g.nominals.length} pilihan nominal ${g.cur}, mulai dari ${rp(g.nominals[0]?.price ?? 0)}.`],
     ["Bagaimana cara membayar?", "Pembayaran memakai QRIS, yang bisa dibayar dari hampir semua e-wallet dan m-banking di Indonesia seperti GoPay, DANA, OVO, ShopeePay, atau BCA Mobile."],
   ];
 }
-
-function rpah(n: number) { return "Rp" + n.toLocaleString("id-ID"); }
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -84,7 +87,7 @@ export default async function TopUpPage({ params }: PageProps) {
   if (!result) notFound();
   const { game, db } = result;
 
-  const crumbs = [
+  const crumbs: BreadcrumbItem[] = [
     { label: "Home", href: "/" },
     { label: "Top Up", href: "/top-up" },
     { label: game.name },
@@ -92,19 +95,16 @@ export default async function TopUpPage({ params }: PageProps) {
 
   const otherGames = GAMES.filter((x) => x.slug !== slug);
   const faqs = gameFaqs(game);
-
   const fitClass = game.logoStyle === "fill" ? "object-fill" : "object-contain";
-  const roundedLogo = game.logoStyle === "fill" ? "" : "";
 
   return (
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
         <section className="relative overflow-hidden pt-28 pb-8 sm:pt-36">
           <div className="absolute inset-0 grid-bg" />
-          <div className="aura float" style={{ width: 460, height: 460, background: "#4a2ee0", top: -220, left: "20%", opacity: 0.4 }} />
-          <div className="wrap relative">
+          <div className="absolute rounded-full blur-[90px] pointer-events-none opacity-50" style={{ width: 460, height: 460, background: "#4a2ee0", top: -220, left: "20%" }} />
+          <div className="max-w-[1180px] mx-auto px-5 relative">
             <Breadcrumb items={crumbs} className="mb-0" />
             <div className="mt-6">
               <div className="flex flex-wrap items-center gap-5">
@@ -114,18 +114,18 @@ export default async function TopUpPage({ params }: PageProps) {
                     alt={game.alt}
                     width={80}
                     height={80}
-                    className={`game-logo h-full w-full ${fitClass} ${roundedLogo}`}
+                    className={`game-logo h-full w-full ${fitClass}`}
                   />
                 </div>
                 <div>
                   <p className="text-[12px] uppercase tracking-[.2em]" style={{ color: "#a08bff" }}>{game.name}</p>
-                  <h1 className="display mt-2 text-[28px] font-extrabold leading-tight sm:text-[38px]">{game.heading}</h1>
+                  <h1 className="font-display mt-2 text-[28px] font-extrabold leading-tight sm:text-[38px]">{game.heading}</h1>
                 </div>
               </div>
               <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted">{game.copy}</p>
               <div className="mt-5 flex flex-wrap gap-2 text-[12.5px] text-muted">
                 <span className="glass rounded-full px-3.5 py-1.5">{game.cur} &middot; {game.nominals.length} nominal</span>
-                <span className="glass rounded-full px-3.5 py-1.5">Mulai {rpah(game.nominals[0]?.price ?? 0)}</span>
+                <span className="glass rounded-full px-3.5 py-1.5">Mulai {rp(game.nominals[0]?.price ?? 0)}</span>
                 <span className="glass rounded-full px-3.5 py-1.5">Pembayaran QRIS</span>
                 <span className="glass rounded-full px-3.5 py-1.5">Mode demo</span>
               </div>
@@ -133,18 +133,16 @@ export default async function TopUpPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Order Form */}
         <section className="relative pb-6">
-          <div className="wrap">
+          <div className="max-w-[1180px] mx-auto px-5">
             <GameOrderForm game={db} qrisUrl="" />
           </div>
         </section>
 
-        {/* Cara Top Up + FAQ */}
         <section className="relative py-14 sm:py-20">
-          <div className="wrap grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
+          <div className="max-w-[1180px] mx-auto px-5 grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
             <div>
-              <h2 className="display text-[24px] font-extrabold sm:text-[32px]">Cara Top Up {game.name}</h2>
+              <h2 className="font-display text-[24px] font-extrabold sm:text-[32px]">Cara Top Up {game.name}</h2>
               <p className="mt-4 text-[14.5px] leading-relaxed text-muted">Empat langkah singkat, selesai kurang dari satu menit.</p>
               <ol className="mt-6 space-y-3 text-[13.5px] text-muted">
                 <li><span className="font-semibold text-white/80">01.</span> Masukkan data akun {game.name} kamu.</li>
@@ -154,12 +152,12 @@ export default async function TopUpPage({ params }: PageProps) {
               </ol>
             </div>
             <div>
-              <h2 className="display text-[24px] font-extrabold sm:text-[32px]">FAQ {game.name}</h2>
+              <h2 className="font-display text-[24px] font-extrabold sm:text-[32px]">FAQ {game.name}</h2>
               <div className="mt-6 space-y-3">
                 {faqs.map((f, i) => (
                   <details key={i} className="faq glass rounded-2xl px-5">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4">
-                      <h3 className="display text-[14.5px] font-semibold sm:text-[15.5px]">{f[0]}</h3>
+                      <h3 className="font-display text-[14.5px] font-semibold sm:text-[15.5px]">{f[0]}</h3>
                       <span className="faq-i shrink-0 text-muted">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M12 5v14M5 12h14" />
@@ -174,10 +172,9 @@ export default async function TopUpPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Game lainnya */}
         <section className="relative pb-20 sm:pb-28">
-          <div className="wrap">
-            <h2 className="display text-[22px] font-extrabold sm:text-[28px]">Game lainnya</h2>
+          <div className="max-w-[1180px] mx-auto px-5">
+            <h2 className="font-display text-[22px] font-extrabold sm:text-[28px]">Game lainnya</h2>
             <p className="mt-3 text-[13.5px] text-muted">Mau top up game lain? Pilih dari daftar di bawah.</p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {otherGames.map((x) => {
@@ -188,12 +185,10 @@ export default async function TopUpPage({ params }: PageProps) {
                     href={`/top-up/${x.slug}`}
                     className="game-card glass flex items-center gap-3 rounded-2xl p-4"
                   >
-                    <div className="h-10 w-10 shrink-0">
-                      <Image src={x.logo} alt="" width={40} height={40} className={`h-10 w-10 ${xFit}`} />
-                    </div>
+                    <Image src={x.logo} alt="" width={40} height={40} className={`h-10 w-10 ${xFit}`} />
                     <span>
                       <span className="block text-[13.5px] font-semibold">{x.name}</span>
-                      <span className="block text-[12px] text-muted">{x.cur} &middot; mulai {rpah(x.nominals[0]?.price ?? 0)}</span>
+                      <span className="block text-[12px] text-muted">{x.cur} &middot; mulai {rp(x.nominals[0]?.price ?? 0)}</span>
                     </span>
                   </Link>
                 );
