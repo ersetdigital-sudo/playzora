@@ -7,7 +7,7 @@ import { Footer } from "@/components/sections/Footer";
 import { GameOrderForm } from "@/components/sections/GameOrderForm";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import type { BreadcrumbItem } from "@/components/ui/Breadcrumb";
-import { breadcrumbJsonLd } from "@/lib/breadcrumb-json-ld";
+import { gameJsonLd } from "@/lib/json-ld";
 import { site } from "@/lib/site";
 import { GAMES } from "@/lib/games";
 import type { Game } from "@/lib/games";
@@ -70,10 +70,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { game } = result;
   return {
     title: `${game.heading} | ${site.name}`,
-    description: `Top up ${game.range} ${game.name} secara instan di ${site.name}. Proses cepat 24 jam, tanpa login akun, pembayaran QRIS.`,
+    description: `Top up ${game.range} ${game.name} secara instan di ${site.name}. Proses otomatis 24 jam, tanpa login akun, pembayaran QRIS. Mulai dari ${rp(game.nominals[0]?.price ?? 0)}.`,
     openGraph: {
       title: `${game.heading} | ${site.name}`,
-      description: game.copy,
+      description: `Top up ${game.range} ${game.name} secara instan. Proses otomatis 24 jam, pembayaran QRIS.`,
       url: `${site.url}/top-up/${slug}`,
       images: [{ url: site.ogImage, width: 1200, height: 630, alt: `${game.heading} di ${site.name}` }],
     },
@@ -89,7 +89,7 @@ export default async function TopUpPage({ params }: PageProps) {
 
   const crumbs: BreadcrumbItem[] = [
     { label: "Home", href: "/" },
-    { label: "Top Up", href: "/top-up" },
+    { label: "Top Up", href: "/#games" },
     { label: game.name },
   ];
 
@@ -200,7 +200,7 @@ export default async function TopUpPage({ params }: PageProps) {
         </section>
       </main>
       <Footer />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd(crumbs)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd(db)) }} />
     </>
   );
 }

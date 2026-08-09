@@ -6,7 +6,7 @@ import { WhySection } from "@/components/sections/WhySection";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { CTASection } from "@/components/sections/CTASection";
 import { Footer } from "@/components/sections/Footer";
-import { faqJsonLd } from "@/lib/json-ld";
+import { faqJsonLd, howToJsonLd } from "@/lib/json-ld";
 import { GAMES } from "@/lib/games";
 import type { DbGameWithNominals } from "@/types/game";
 
@@ -56,6 +56,7 @@ export default async function Home() {
       </main>
       <Footer />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }} />
     </>
   );
 }
