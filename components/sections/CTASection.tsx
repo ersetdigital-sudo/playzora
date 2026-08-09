@@ -1,6 +1,19 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter, usePathname } from "next/navigation";
 
 export function CTASection() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const scrollToGames = () => {
+    if (pathname === "/") {
+      document.getElementById("games")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      router.push("/#games");
+    }
+  };
+
   return (
     <section className="relative py-8 sm:py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-5">
@@ -10,8 +23,8 @@ export function CTASection() {
           <h2 className="display relative mx-auto mt-4 max-w-2xl text-[32px] font-extrabold leading-[1.1] sm:text-[48px]">Isi saldo game-mu sekarang.</h2>
           <p className="relative mx-auto mt-5 max-w-xl text-[15.5px] text-white/60">Pilih game, masukkan User ID, lalu bayar. Prosesnya cuma butuh waktu kurang dari satu menit.</p>
           <div className="relative mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/#games" className="btn-primary rounded-2xl px-7 py-4 text-[15px] font-bold text-white">Top Up Sekarang</Link>
-            <Link href="/#games" className="btn-ghost rounded-2xl px-7 py-4 text-[15px] font-semibold">Lihat Game</Link>
+            <button onClick={scrollToGames} className="btn-primary rounded-2xl px-7 py-4 text-[15px] font-bold text-white">Top Up Sekarang</button>
+            <button onClick={scrollToGames} className="btn-ghost rounded-2xl px-7 py-4 text-[15px] font-semibold">Lihat Game</button>
           </div>
         </div>
       </div>
