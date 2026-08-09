@@ -14,7 +14,8 @@ export default async function AdminDashboard() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { count: activeGames } = await (supabase.from("games") as any).select("*", { count: "exact", head: true }).eq("is_active", true);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: qris } = await (supabase.from("settings") as any).select("value").eq("key", "qris_image_url").single() as { data: { value: string } | null };
+    const { data: qrisRows } = await (supabase.from("settings") as any).select("value").eq("key", "qris_image_url") as { data: Array<{ value: string }> | null };
+    const qris = qrisRows?.[0] ?? null;
 
     stats = [
       { label: "Game Aktif", value: activeGames ?? 0, sub: `dari ${gamesCount ?? 0} total`, icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01M17 12h.01M7 12h.01"/></svg> },

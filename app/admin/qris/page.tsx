@@ -9,9 +9,9 @@ export default async function AdminQrisPage() {
     const supabase = await createSupabaseServerClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error: dbError } = await (supabase.from("settings") as any)
-      .select("value").eq("key", "qris_image_url").single() as { data: { value: string } | null; error: any };
-    if (dbError && dbError.code !== "PGRST116") throw dbError;
-    currentUrl = data?.value ?? "";
+      .select("value").eq("key", "qris_image_url") as { data: Array<{ value: string }> | null; error: any };
+    if (dbError) throw dbError;
+    currentUrl = data?.[0]?.value ?? "";
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
     if (msg.includes("relation") && msg.includes("does not exist")) {

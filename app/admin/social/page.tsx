@@ -2,13 +2,15 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { updateSocials } from "./actions";
 
 export default async function AdminSocialPage() {
-  const supabase = await createSupabaseServerClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data } = await (supabase.from("settings") as any)
+  let socials: Record<string, string> = {};
+  try {
+    const supabase = await createSupabaseServerClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .select("value").eq("key", "social_links").single() as { data: { value: any } | null };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const socials = (data?.value as any) ?? {};
+    const { data } = await (supabase.from("settings") as any)
+      .select("value").eq("key", "social_links") as { data: Array<{ value: Record<string, string> }> | null };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    socials = (data?.[0]?.value as any) ?? {};
+  } catch {}
 
   return (
     <div>
