@@ -36,7 +36,7 @@ export default function AdminQrisPage() {
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
       const fd = new FormData();
       fd.append("file", file);
-      fd.append("upload_preset", "ml_default");
+      fd.append("upload_preset", "oos-shop-default");
 
       const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: "POST",
