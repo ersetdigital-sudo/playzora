@@ -8,9 +8,8 @@ import { createSupabaseClient } from "@/lib/supabase";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> },
-  { href: "/admin/games", label: "Games", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01M17 12h.01M7 12h.01"/></svg> },
-  { href: "/admin/qris", label: "QRIS Image", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><path d="M21 14h-4v4"/></svg> },
-  { href: "/admin/social", label: "Sosial Media", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg> },
+  { href: "/admin/games", label: "Kelola Harga", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg> },
+  { href: "/admin/qris", label: "Kelola QRIS", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><path d="M21 14h-4v4"/></svg> },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -40,16 +39,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-[#07070c] flex">
+    <div className="min-h-screen bg-ink flex">
       {/* Desktop sidebar */}
-      <aside className="w-56 shrink-0 border-r border-white/[0.04] bg-[rgba(255,255,255,0.02)] hidden lg:flex flex-col">
+      <aside className="w-56 shrink-0 border-r border-white/[0.04] bg-panel hidden lg:flex flex-col">
         <div className="px-4 py-4 border-b border-white/[0.04]">
           <Link href="/" className="flex items-center gap-2">
             <LogoMark className="w-6 h-6 shrink-0" />
-            <span className="font-display font-extrabold tracking-[.16em] text-[13px]">
-              <span className="text-white">PLAY</span>
-              <span className="grad-text">ZORA</span>
-            </span>
+            <span className="font-display font-semibold text-sm tracking-tight text-white/90">Playzora</span>
           </Link>
           <p className="text-[10px] text-white/25 mt-1 uppercase tracking-[.15em]">Admin Panel</p>
         </div>
@@ -98,10 +94,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="lg:hidden border-b border-white/[0.04] px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <LogoMark className="w-6 h-6 shrink-0" />
-            <span className="font-display font-extrabold tracking-[.16em] text-[13px]">
-              <span className="text-white">PLAY</span>
-              <span className="grad-text">ZORA</span>
-            </span>
+            <span className="font-display font-semibold text-sm tracking-tight text-white/90">Admin</span>
           </div>
           <div className="flex items-center gap-2">
             {email && (
@@ -122,7 +115,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Mobile nav dropdown */}
         {mobileOpen && (
-          <nav className="lg:hidden border-b border-white/[0.04] bg-[rgba(255,255,255,0.02)] px-2 py-2 space-y-0.5">
+          <nav className="lg:hidden border-b border-white/[0.04] bg-panel px-2 py-2 space-y-0.5">
             {NAV.map((item) => (
               <Link
                 key={item.href}

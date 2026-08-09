@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createSupabaseClient } from "@/lib/supabase";
 import { LogoMark } from "@/components/ui/LogoMark";
 
@@ -10,7 +9,6 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +26,7 @@ export default function AdminLoginPage() {
 
     try {
       const supabase = createSupabaseClient();
+
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: trimmedEmail,
         password: trimmedPassword,
@@ -54,59 +53,116 @@ export default function AdminLoginPage() {
       window.location.href = "/admin";
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setError(err.message);
+        if (err.message.includes("Failed to fetch") || err.message.includes("NetworkError")) {
+          setError("Koneksi gagal. Periksa internet dan coba lagi.");
+        } else if (err.message.includes("timeout")) {
+          setError("Koneksi timeout. Coba lagi dalam beberapa saat.");
+        } else {
+          setError(err.message);
+        }
       } else {
-        setError("Terjadi kesalahan. Coba lagi.");
+        setError("Terjadi kesalahan tak dikenal. Coba lagi.");
       }
       setLoading(false);
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const supabase = createSupabaseClient();
+      const { error: authError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/admin`,
+        },
+      });
+
+      if (authError) {
+        setError("Google login gagal. Pastikan provider Google sudah diaktifkan di Supabase.");
+        setLoading(false);
+      }
+    } catch {
+      setError("Google login gagal. Coba lagi.");
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#07070c] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#070707] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Subtle background glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full blur-3xl opacity-[0.04]" style={{ background: "#7c5cff" }} />
-        <div className="absolute -bottom-32 -right-32 w-[400px] h-[400px] rounded-full blur-3xl opacity-[0.03]" style={{ background: "#39e5b6" }} />
+        <div
+          className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full blur-3xl opacity-[0.04]"
+          style={{ background: "#7c5cff" }}
+        />
+        <div
+          className="absolute -bottom-32 -right-32 w-[400px] h-[400px] rounded-full blur-3xl opacity-[0.03]"
+          style={{ background: "#7c5cff" }}
+        />
       </div>
 
+      {/* Main card */}
       <div className="relative w-full max-w-[1050px] min-h-[700px] rounded-[2.5rem] border border-white/[0.06] bg-[#111113]/90 backdrop-blur-sm shadow-2xl overflow-hidden z-10 flex">
-        {/* Left panel */}
+        {/* Left image panel (desktop) */}
         <div className="hidden lg:flex w-[56%] relative overflow-hidden rounded-l-[2.5rem]">
-          <div className="absolute inset-0" style={{ clipPath: "polygon(0 0, 100% 0, 88% 100%, 0% 100%)" }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-[#7c5cff]/8 via-[#07070c] to-[#07070c]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07070c] via-transparent to-[#07070c]/60" />
-            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(124,92,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(124,92,255,0.3) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
-            <div className="absolute top-1/4 left-1/3 w-80 h-80 rounded-full blur-3xl opacity-10" style={{ background: "#7c5cff" }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              clipPath: "polygon(0 0, 100% 0, 88% 100%, 0% 100%)",
+            }}
+          >
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#7c5cff]/8 via-[#070707] to-[#070707]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60" />
 
+            {/* Grid pattern */}
+            <div
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage: `linear-gradient(rgba(124,92,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(124,92,255,0.3) 1px, transparent 1px)`,
+                backgroundSize: "60px 60px",
+              }}
+            />
+
+            {/* Floating glow */}
+            <div
+              className="absolute top-1/4 left-1/3 w-80 h-80 rounded-full blur-3xl opacity-10"
+              style={{ background: "#7c5cff" }}
+            />
+
+            {/* Content */}
             <div className="absolute inset-0 flex flex-col justify-between p-10">
+              {/* Top nav */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <LogoMark className="w-6 h-6" />
-                  <span className="font-display font-extrabold tracking-[.16em] text-[13px]">
-                    <span className="text-white">PLAY</span>
-                    <span className="grad-text">ZORA</span>
-                  </span>
+                  <span className="font-display font-semibold text-white/80 text-sm">Playzora</span>
                 </div>
                 <div className="flex gap-6 text-[11px] uppercase tracking-[.15em] text-white/30">
-                  <span style={{ color: "#7c5cff" }} className="opacity-60">Admin</span>
+                  <span className="text-[#7c5cff]/60">Admin</span>
                   <span>Panel</span>
                 </div>
               </div>
 
+              {/* Center text */}
               <div className="flex-1 flex items-center">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[.3em] mb-3" style={{ color: "rgba(124,92,255,0.4)" }}>Dashboard</p>
+                  <p className="text-[10px] uppercase tracking-[.3em] text-[#7c5cff]/40 mb-3">Dashboard</p>
                   <h2 className="font-display text-4xl font-bold text-white/90 leading-tight">
-                    Kelola <span className="grad-text">Playzora</span>
+                    Kelola <span className="violet-text">Playzora</span>
                     <br />
                     Dengan Mudah
                   </h2>
                   <p className="mt-4 text-sm text-white/30 leading-relaxed max-w-sm">
-                    Kelola game, harga, dan pembayaran dalam satu panel terintegrasi.
+                    kelola game, harga, dan pembayaran dalam satu panel terintegrasi.
                   </p>
                 </div>
               </div>
 
+              {/* Bottom arrows */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/30 hover:text-white/60 hover:border-white/20 transition cursor-pointer">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
@@ -122,14 +178,16 @@ export default function AdminLoginPage() {
         {/* Right form panel */}
         <div className="w-full lg:w-[44%] flex flex-col items-center justify-center p-8 lg:p-12 relative">
           <div className="w-full max-w-[340px]">
+            {/* Brand */}
             <div className="mb-8">
-              <p className="text-[10px] uppercase tracking-[.3em] mb-2" style={{ color: "rgba(124,92,255,0.5)" }}>Admin Panel</p>
+              <p className="text-[10px] uppercase tracking-[.3em] text-[#7c5cff]/50 mb-2">Admin Panel</p>
               <h1 className="font-display text-2xl font-bold text-white">
-                Hi, <span className="grad-text">Admin</span>
+                Hi, <span className="violet-text">Admin</span>
               </h1>
               <p className="mt-1 text-sm text-white/30">Welcome to Playzora Admin</p>
             </div>
 
+            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <div className="flex items-center gap-3 text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
@@ -150,24 +208,50 @@ export default function AdminLoginPage() {
               </div>
 
               <div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  required
-                  className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-[#7c5cff]/40 focus:bg-white/[0.05] transition-all duration-200"
-                />
+                <div className="relative">
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    required
+                    className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-[#7c5cff]/40 focus:bg-white/[0.05] transition-all duration-200"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-white/30 hover:text-[#7c5cff]/60 transition"
+                  >
+                    Lupa password?
+                  </button>
+                </div>
               </div>
 
+              {/* Social login */}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-3 bg-white/[0.04] border border-white/[0.08] rounded-xl py-3 text-sm text-white/60 hover:bg-white/[0.08] hover:text-white/80 transition-all duration-200 disabled:opacity-50"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  Login dengan Google
+                </button>
+              </div>
+
+              {/* CTA Button */}
               <div className="pt-2">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="relative w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group"
-                  style={{ background: "linear-gradient(135deg, #8b6dff, #4a2ee0)" }}
+                  className="relative w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group btn-violet"
                 >
-                  <span className="relative text-white">
+                  <span className="relative text-[#0a0a0b]">
                     {loading ? (
                       <span className="inline-flex items-center gap-2">
                         <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -177,17 +261,30 @@ export default function AdminLoginPage() {
                         Memproses…
                       </span>
                     ) : (
-                      "Masuk"
+                      "Login"
                     )}
                   </span>
                 </button>
               </div>
 
+              {/* Signup link */}
               <p className="text-center text-xs text-white/25 pt-2">
                 Belum punya akses?{" "}
-                <span style={{ color: "rgba(124,92,255,0.6)" }} className="hover:text-[#7c5cff] cursor-pointer transition">Hubungi developer</span>
+                <span className="text-[#7c5cff]/60 hover:text-[#7c5cff] cursor-pointer transition">Hubungi developer</span>
               </p>
             </form>
+
+            {/* Social icons */}
+            <div className="flex items-center justify-center gap-4 mt-8 pt-6 border-t border-white/[0.04]">
+              {["F", "T", "L", "I"].map((icon, i) => (
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full bg-white/[0.04] flex items-center justify-center text-white/20 hover:text-white/50 hover:bg-white/[0.08] transition cursor-pointer"
+                >
+                  <span className="text-[10px] font-medium">{icon}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

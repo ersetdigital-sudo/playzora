@@ -11,12 +11,12 @@ export default async function EditGamePage({ params }: Props) {
   const supabase = await createSupabaseServerClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: game } = await (supabase.from("games") as any)
-    .select("*").eq("id", id).single() as { data: any };
+    .select("*").eq("id", id).single() as { data: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!game) notFound();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: pricingRows } = await (supabase.from("pricing") as any)
-    .select("*").eq("game_id", id).order("sort_order") as { data: any[] | null };
+    .select("*").eq("game_id", id).order("sort_order") as { data: any[] | null }; // eslint-disable-line @typescript-eslint/no-explicit-any
   game.pricing = pricingRows ?? [];
 
   return <GameForm game={game} />;
