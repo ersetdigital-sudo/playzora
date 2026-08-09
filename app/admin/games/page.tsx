@@ -14,7 +14,7 @@ export default async function AdminGamesPage() {
     if (dbError) throw dbError;
     games = data ?? [];
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : String(e);
+    const msg = e instanceof Error ? e.message : typeof e === "object" && e !== null ? JSON.stringify(e) : String(e);
     if (msg.includes("relation") && msg.includes("does not exist")) {
       errorMsg = "Tabel belum dibuat. Jalankan SQL schema di Supabase SQL Editor.";
     } else {
