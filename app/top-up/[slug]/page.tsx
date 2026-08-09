@@ -7,14 +7,13 @@ import { Footer } from "@/components/sections/Footer";
 import { GameOrderForm } from "@/components/sections/GameOrderForm";
 import { Breadcrumb, breadcrumbJsonLd } from "@/components/ui/Breadcrumb";
 import { site } from "@/lib/site";
-import { getGameBySlug, getQrisUrl, type DbGameWithNominals } from "@/lib/db";
 import { GAMES } from "@/lib/games";
 
-function fallbackGame(slug: string): DbGameWithNominals | null {
+function buildGame(slug: string) {
   const g = GAMES.find((x) => x.slug === slug);
   if (!g) return null;
   return {
-    id: `fallback-${slug}`,
+    id: `fb-${slug}`,
     slug: g.slug,
     name: g.name,
     icon_url: g.logo,
@@ -29,7 +28,7 @@ function fallbackGame(slug: string): DbGameWithNominals | null {
     hide_server_id: false,
     nominals: g.nominals.map((n, j) => ({
       id: `fn-${slug}-${j}`,
-      game_id: `fallback-${slug}`,
+      game_id: `fb-${slug}`,
       nominal_label: n.label,
       price: n.price,
       sort_order: j,
@@ -43,11 +42,8 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  let game: DbGameWithNominals | null = null;
-  try { game = await getGameBySlug(slug); } catch {}
-  game = game ?? fallbackGame(slug);
+  const game = buildGame(slug);
   if (!game) return { title: "Game tidak ditemukan" };
-
   return {
     title: `Top Up ${game.name} Murah & Instan`,
     description: `Top up ${game.range_label} ${game.name} secara instan di PLAYZORA. Proses cepat 24 jam, tanpa login akun, pembayaran QRIS.`,
@@ -63,13 +59,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TopUpPage({ params }: PageProps) {
   const { slug } = await params;
-  let game: DbGameWithNominals | null = null;
-  try { game = await getGameBySlug(slug); } catch {}
-  game = game ?? fallbackGame(slug);
+  const game = buildGame(slug);
   if (!game) notFound();
-
-  let qrisUrl = "";
-  try { qrisUrl = await getQrisUrl(); } catch {}
 
   const crumbs = [
     { label: "Home", href: "/" },
@@ -94,7 +85,7 @@ export default async function TopUpPage({ params }: PageProps) {
                 <span className="grad-text">{game.range_label}</span>
               </h1>
               <p className="mt-5 text-white/50 text-sm font-light max-w-sm">
-                Tidak perlu password atau kode OTP. Cukup {game.user_id_label}{!game.hide_server_id && game.server_id_required ? ` & ${game.server_id_label}` : ""}.
+                Tidak perlu password atau kode OTP. Cukup {game.user_id_label}.
               </p>
               <ul className="mt-8 space-y-3 text-sm text-white/60">
                 <li className="flex gap-3"><span className="text-mint shrink-0">&#10003;</span> Proses cepat 24 jam nonstop</li>
@@ -105,7 +96,7 @@ export default async function TopUpPage({ params }: PageProps) {
                 <Image src={game.icon_url} alt={`Logo ${game.name}`} width={game.icon_width} height={game.icon_height} className="w-auto h-auto" sizes="120px" />
               </div>
             </div>
-            <GameOrderForm game={game} qrisUrl={qrisUrl} />
+            <GameOrderForm game={game} qrisUrl="" />
           </div>
         </section>
         <section className="sect border-t border-white/5">

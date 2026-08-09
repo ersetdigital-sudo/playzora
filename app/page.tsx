@@ -7,12 +7,12 @@ import { FAQSection } from "@/components/sections/FAQSection";
 import { CTASection } from "@/components/sections/CTASection";
 import { Footer } from "@/components/sections/Footer";
 import { faqJsonLd } from "@/lib/json-ld";
-import { getActiveGames, type DbGameWithNominals } from "@/lib/db";
 import { GAMES } from "@/lib/games";
+import type { DbGameWithNominals } from "@/lib/db";
 
-function fallbackGames(): DbGameWithNominals[] {
+function gamesFromStatic(): DbGameWithNominals[] {
   return GAMES.map((g, i) => ({
-    id: `fallback-${i}`,
+    id: `s-${i}`,
     slug: g.slug,
     name: g.name,
     icon_url: g.logo,
@@ -26,8 +26,8 @@ function fallbackGames(): DbGameWithNominals[] {
     server_id_required: false,
     hide_server_id: false,
     nominals: g.nominals.map((n, j) => ({
-      id: `fn-${i}-${j}`,
-      game_id: `fallback-${i}`,
+      id: `sn-${i}-${j}`,
+      game_id: `s-${i}`,
       nominal_label: n.label,
       price: n.price,
       sort_order: j,
@@ -36,9 +36,12 @@ function fallbackGames(): DbGameWithNominals[] {
 }
 
 export default async function Home() {
-  let dbGames: DbGameWithNominals[] = [];
-  try { dbGames = await getActiveGames(); } catch {}
-  const games = dbGames.length > 0 ? dbGames : fallbackGames();
+  let games = gamesFromStatic();
+  try {
+    const { getActiveGames } = await import("@/lib/db");
+    const dbGames = await getActiveGames();
+    if (dbGames.length > 0) games = dbGames;
+  } catch {}
 
   return (
     <>
