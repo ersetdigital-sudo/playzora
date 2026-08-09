@@ -6,11 +6,19 @@ export interface Nominal {
 export interface Game {
   slug: string;
   name: string;
+  cur: string;
   range: string;
   logo: string;
   logoWidth: number;
   logoHeight: number;
   logoStyle?: "contain" | "fill";
+  alt: string;
+  tag?: string;
+  heading: string;
+  copy: string;
+  hint: string;
+  server: boolean;
+  serverLabel?: string;
   nominals: Nominal[];
   passes?: Nominal[];
 }
@@ -19,11 +27,19 @@ export const GAMES: Game[] = [
   {
     slug: "mobile-legends",
     name: "Mobile Legends",
-    range: "Diamond 5 – 5000+",
+    cur: "Diamond",
+    range: "5 – 5000+",
     logo: "/images/mobile-legends.svg",
     logoWidth: 120,
     logoHeight: 120,
-    logoStyle: "fill",
+    logoStyle: "contain",
+    alt: "Logo resmi Mobile Legends: Bang Bang",
+    tag: "Terpopuler",
+    heading: "Top Up Diamond Mobile Legends",
+    copy: "Isi Diamond Mobile Legends dengan cepat dan mudah. Masukkan User ID dan Zone ID, pilih nominal, lalu lanjutkan pembayaran.",
+    hint: "User ID dan Zone ID ada di menu profil dalam game, format (123456789) (1234).",
+    server: true,
+    serverLabel: "Zone ID",
     nominals: [
       { label: "5 Diamond", price: 1500 },
       { label: "12 Diamond", price: 3300 },
@@ -39,11 +55,18 @@ export const GAMES: Game[] = [
   {
     slug: "free-fire",
     name: "Free Fire",
-    range: "Diamond 5 – 7290",
+    cur: "Diamond",
+    range: "5 – 7290",
     logo: "/images/free-fire.png",
     logoWidth: 616,
     logoHeight: 90,
-    logoStyle: "fill",
+    logoStyle: "contain",
+    alt: "Logo resmi Garena Free Fire",
+    tag: "Cepat",
+    heading: "Top Up Diamond Free Fire",
+    copy: "Isi Diamond Free Fire tanpa ribet. Masukkan User ID akunmu, pilih nominal, lalu lanjutkan pembayaran lewat QRIS.",
+    hint: "User ID Free Fire dapat dilihat pada halaman profil akunmu.",
+    server: false,
     nominals: [
       { label: "5 Diamond", price: 1600 },
       { label: "50 Diamond", price: 7300 },
@@ -59,10 +82,16 @@ export const GAMES: Game[] = [
   {
     slug: "pubg-mobile",
     name: "PUBG Mobile",
-    range: "UC 60 – 8100",
+    cur: "UC",
+    range: "60 – 8100",
     logo: "/images/pubg-mobile.jpg",
     logoWidth: 512,
     logoHeight: 380,
+    alt: "Ikon resmi PUBG Mobile",
+    heading: "Top Up UC PUBG Mobile",
+    copy: "Isi UC PUBG Mobile dengan proses instan. Masukkan Character ID, pilih nominal UC, lalu lanjutkan pembayaran.",
+    hint: "Character ID PUBG Mobile ada di menu profil, biasanya 10 digit angka.",
+    server: false,
     nominals: [
       { label: "60 UC", price: 14500 },
       { label: "120 UC", price: 28500 },
@@ -78,11 +107,17 @@ export const GAMES: Game[] = [
   {
     slug: "call-of-duty-mobile",
     name: "Call of Duty: Mobile",
-    range: "CP 80 – 10800",
+    cur: "CP",
+    range: "80 – 10800",
     logo: "/images/call-of-duty-mobile.svg",
     logoWidth: 445,
     logoHeight: 227,
-    logoStyle: "fill",
+    logoStyle: "contain",
+    alt: "Logo resmi Call of Duty",
+    heading: "Top Up CP Call of Duty: Mobile",
+    copy: "Isi CP Call of Duty: Mobile dalam hitungan detik. Masukkan Open ID, pilih nominal CP, lalu lanjutkan pembayaran.",
+    hint: "Open ID / Player ID COD Mobile dapat dilihat pada menu profil dalam game.",
+    server: false,
     nominals: [
       { label: "80 CP", price: 15500 },
       { label: "160 CP", price: 30500 },
@@ -98,11 +133,19 @@ export const GAMES: Game[] = [
   {
     slug: "magic-chess-go-go",
     name: "Magic Chess: Go Go",
-    range: "Diamond & Pass",
+    cur: "Diamond / Pass",
+    range: "5 – 3000 & Pass",
     logo: "/images/magic-chess-go-go.png",
     logoWidth: 154,
     logoHeight: 62,
-    logoStyle: "fill",
+    logoStyle: "contain",
+    alt: "Logo resmi Magic Chess: Go Go",
+    tag: "Baru",
+    heading: "Top Up Diamond & Pass Magic Chess: Go Go",
+    copy: "Isi Diamond atau Pass Magic Chess: Go Go dengan mudah. Masukkan User ID dan Server ID, pilih nominal, lalu lanjutkan pembayaran.",
+    hint: "User ID dan Server ID Magic Chess: Go Go tertera pada menu profil.",
+    server: true,
+    serverLabel: "Server ID",
     nominals: [
       { label: "5 Diamond", price: 1600 },
       { label: "16 Diamond", price: 4400 },

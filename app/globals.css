@@ -157,6 +157,52 @@
     padding-bottom: clamp(56px, 10vw, 112px);
   }
 
+  .aura {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .float {
+    animation: fl 7s ease-in-out infinite;
+  }
+  @keyframes fl {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .game-card {
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.35s,
+      background 0.35s;
+  }
+  .game-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124, 92, 255, 0.45);
+    background: rgba(124, 92, 255, 0.06);
+  }
+
+  .game-logo {
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
+  }
+
+  .faq[open] .faq-i {
+    transform: rotate(45deg);
+    color: #8b6dff;
+  }
+  .faq-i {
+    transition: transform 0.3s, color 0.3s;
+  }
+
   .reveal {
     opacity: 0;
     transform: translateY(18px);

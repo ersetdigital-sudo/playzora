@@ -8,34 +8,53 @@ import { GameOrderForm } from "@/components/sections/GameOrderForm";
 import { Breadcrumb, breadcrumbJsonLd } from "@/components/ui/Breadcrumb";
 import { site } from "@/lib/site";
 import { GAMES } from "@/lib/games";
+import type { Game } from "@/lib/games";
 import type { DbGameWithNominals } from "@/types/game";
+import { rupiah } from "@/lib/format";
 
-function buildGame(slug: string): DbGameWithNominals | null {
+function buildGame(slug: string): { game: Game; db: DbGameWithNominals } | null {
   const g = GAMES.find((x) => x.slug === slug);
   if (!g) return null;
   return {
-    id: `fb-${slug}`,
-    slug: g.slug,
-    name: g.name,
-    icon_url: g.logo,
-    icon_width: g.logoWidth,
-    icon_height: g.logoHeight,
-    range_label: g.range,
-    user_id_label: "ID Pengguna",
-    user_id_placeholder: "12345678",
-    server_id_label: "Server ID",
-    server_id_placeholder: "1000",
-    server_id_required: false,
-    hide_server_id: false,
-    nominals: g.nominals.map((n, j) => ({
-      id: `fn-${slug}-${j}`,
-      game_id: `fb-${slug}`,
-      nominal_label: n.label,
-      price: n.price,
-      sort_order: j,
-    })),
+    game: g,
+    db: {
+      id: `fb-${slug}`,
+      slug: g.slug,
+      name: g.name,
+      icon_url: g.logo,
+      icon_width: g.logoWidth,
+      icon_height: g.logoHeight,
+      range_label: g.range,
+      user_id_label: "User ID",
+      user_id_placeholder: "12345678",
+      server_id_label: g.serverLabel || "Server ID",
+      server_id_placeholder: "1000",
+      server_id_required: g.server,
+      hide_server_id: !g.server,
+      nominals: g.nominals.map((n, j) => ({
+        id: `fn-${slug}-${j}`,
+        game_id: `fb-${slug}`,
+        nominal_label: n.label,
+        price: n.price,
+        sort_order: j,
+      })),
+    },
   };
 }
+
+function gameFaqs(g: Game) {
+  const pilih = g.server
+    ? `User ID dan ${g.serverLabel || "Server ID"}`
+    : "User ID";
+  return [
+    [`Berapa lama proses top up ${g.name}?`, `Setelah pembayaran QRIS terkonfirmasi, ${g.cur} diteruskan otomatis dan umumnya masuk ke akun dalam beberapa detik.`],
+    [`Data apa yang dibutuhkan untuk top up ${g.name}?`, `Cukup ${pilih}. Playzora tidak pernah meminta password, OTP, atau akses login akun game.`],
+    [`Berapa pilihan nominal ${g.name} yang tersedia?`, `Tersedia sembilan pilihan nominal ${g.cur}, mulai dari ${rpah(g.nominals[0]?.price ?? 0)}.`],
+    ["Bagaimana cara membayar?", "Pembayaran memakai QRIS, yang bisa dibayar dari hampir semua e-wallet dan m-banking di Indonesia seperti GoPay, DANA, OVO, ShopeePay, atau BCA Mobile."],
+  ];
+}
+
+function rpah(n: number) { return "Rp" + n.toLocaleString("id-ID"); }
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -43,16 +62,17 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const game = buildGame(slug);
-  if (!game) return { title: "Game tidak ditemukan" };
+  const result = buildGame(slug);
+  if (!result) return { title: "Game tidak ditemukan" };
+  const { game } = result;
   return {
-    title: `Top Up ${game.name} Murah & Instan`,
-    description: `Top up ${game.range_label} ${game.name} secara instan di PLAYZORA. Proses cepat 24 jam, tanpa login akun, pembayaran QRIS.`,
+    title: `${game.heading} | ${site.name}`,
+    description: `Top up ${game.range} ${game.name} secara instan di ${site.name}. Proses cepat 24 jam, tanpa login akun, pembayaran QRIS.`,
     openGraph: {
-      title: `Top Up ${game.name} Murah & Instan | PLAYZORA`,
-      description: `Top up ${game.range_label} ${game.name} secara instan di PLAYZORA.`,
+      title: `${game.heading} | ${site.name}`,
+      description: game.copy,
       url: `${site.url}/top-up/${slug}`,
-      images: [{ url: site.ogImage, width: 1200, height: 630, alt: `Top Up ${game.name} di PLAYZORA` }],
+      images: [{ url: site.ogImage, width: 1200, height: 630, alt: `${game.heading} di ${site.name}` }],
     },
     alternates: { canonical: `/top-up/${slug}` },
   };
@@ -60,52 +80,128 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TopUpPage({ params }: PageProps) {
   const { slug } = await params;
-  const game = buildGame(slug);
-  if (!game) notFound();
+  const result = buildGame(slug);
+  if (!result) notFound();
+  const { game, db } = result;
 
   const crumbs = [
     { label: "Home", href: "/" },
-    { label: "Top Up", href: "/#games" },
+    { label: "Top Up", href: "/top-up" },
     { label: game.name },
   ];
+
+  const otherGames = GAMES.filter((x) => x.slug !== slug);
+  const faqs = gameFaqs(game);
+
+  const fitClass = game.logoStyle === "fill" ? "object-fill" : "object-contain";
+  const roundedLogo = game.logoStyle === "fill" ? "" : "";
 
   return (
     <>
       <Header />
       <main className="flex-1">
-        <section className="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
+        {/* Hero */}
+        <section className="relative overflow-hidden pt-28 pb-8 sm:pt-36">
           <div className="absolute inset-0 grid-bg" />
-          <div className="glow" style={{ width: 420, height: 420, background: "#7c5cff", top: "10%", left: -140, opacity: 0.18 }} />
-          <div className="relative max-w-5xl mx-auto px-5 grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-16 items-start">
-            <div>
-              <Breadcrumb items={crumbs} className="mb-4" />
-              <p className="text-[12px] uppercase tracking-[.2em]" style={{ color: "#a08bff" }}>Top Up</p>
-              <h1 className="mt-3 font-display h-sec font-extrabold">
-                {game.name}
-                <br />
-                <span className="grad-text">{game.range_label}</span>
-              </h1>
-              <p className="mt-5 text-white/50 text-sm font-light max-w-sm">
-                Tidak perlu password atau kode OTP. Cukup {game.user_id_label}.
-              </p>
-              <ul className="mt-8 space-y-3 text-sm text-white/60">
-                <li className="flex gap-3"><span className="text-mint shrink-0">&#10003;</span> Proses cepat 24 jam nonstop</li>
-                <li className="flex gap-3"><span className="text-mint shrink-0">&#10003;</span> QRIS, e-wallet, VA, dan minimarket</li>
-                <li className="flex gap-3"><span className="text-mint shrink-0">&#10003;</span> Garansi uang kembali bila gagal</li>
-              </ul>
-              <div className="mt-8 hidden lg:block">
-                <Image src={game.icon_url} alt={`Logo ${game.name}`} width={game.icon_width} height={game.icon_height} className="w-auto h-auto" sizes="120px" />
+          <div className="aura float" style={{ width: 460, height: 460, background: "#4a2ee0", top: -220, left: "20%", opacity: 0.4 }} />
+          <div className="wrap relative">
+            <Breadcrumb items={crumbs} className="mb-0" />
+            <div className="mt-6">
+              <div className="flex flex-wrap items-center gap-5">
+                <div className="grid h-20 w-20 shrink-0 place-items-center rounded-3xl border border-line bg-white/[.03] p-3">
+                  <Image
+                    src={game.logo}
+                    alt={game.alt}
+                    width={80}
+                    height={80}
+                    className={`game-logo h-full w-full ${fitClass} ${roundedLogo}`}
+                  />
+                </div>
+                <div>
+                  <p className="text-[12px] uppercase tracking-[.2em]" style={{ color: "#a08bff" }}>{game.name}</p>
+                  <h1 className="display mt-2 text-[28px] font-extrabold leading-tight sm:text-[38px]">{game.heading}</h1>
+                </div>
+              </div>
+              <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-muted">{game.copy}</p>
+              <div className="mt-5 flex flex-wrap gap-2 text-[12.5px] text-muted">
+                <span className="glass rounded-full px-3.5 py-1.5">{game.cur} &middot; {game.nominals.length} nominal</span>
+                <span className="glass rounded-full px-3.5 py-1.5">Mulai {rpah(game.nominals[0]?.price ?? 0)}</span>
+                <span className="glass rounded-full px-3.5 py-1.5">Pembayaran QRIS</span>
+                <span className="glass rounded-full px-3.5 py-1.5">Mode demo</span>
               </div>
             </div>
-            <GameOrderForm game={game} qrisUrl="" />
           </div>
         </section>
-        <section className="sect border-t border-white/5">
-          <div className="max-w-4xl mx-auto px-5 text-center relative">
-            <div className="glow" style={{ width: 400, height: 400, background: "#7c5cff", top: -120, left: "50%", transform: "translateX(-50%)", opacity: 0.2 }} />
-            <h2 className="relative font-display h-cta font-semibold leading-tight">Siap naik <span className="grad-text">rank</span> malam ini?</h2>
-            <p className="relative mt-5 text-white/55 font-light">Top up sekarang, lanjut main tanpa jeda.</p>
-            <Link href="/#games" className="relative inline-block mt-8 btn-primary font-semibold px-8 py-3.5 rounded-full transition">Lihat Game Lain</Link>
+
+        {/* Order Form */}
+        <section className="relative pb-6">
+          <div className="wrap">
+            <GameOrderForm game={db} qrisUrl="" />
+          </div>
+        </section>
+
+        {/* Cara Top Up + FAQ */}
+        <section className="relative py-14 sm:py-20">
+          <div className="wrap grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
+            <div>
+              <h2 className="display text-[24px] font-extrabold sm:text-[32px]">Cara Top Up {game.name}</h2>
+              <p className="mt-4 text-[14.5px] leading-relaxed text-muted">Empat langkah singkat, selesai kurang dari satu menit.</p>
+              <ol className="mt-6 space-y-3 text-[13.5px] text-muted">
+                <li><span className="font-semibold text-white/80">01.</span> Masukkan data akun {game.name} kamu.</li>
+                <li><span className="font-semibold text-white/80">02.</span> Pilih nominal {game.cur.split(" / ")[0]} yang diinginkan.</li>
+                <li><span className="font-semibold text-white/80">03.</span> Periksa ringkasan pesanan dan totalnya.</li>
+                <li><span className="font-semibold text-white/80">04.</span> Bayar lewat QRIS, item masuk otomatis.</li>
+              </ol>
+            </div>
+            <div>
+              <h2 className="display text-[24px] font-extrabold sm:text-[32px]">FAQ {game.name}</h2>
+              <div className="mt-6 space-y-3">
+                {faqs.map((f, i) => (
+                  <details key={i} className="faq glass rounded-2xl px-5">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4">
+                      <h3 className="display text-[14.5px] font-semibold sm:text-[15.5px]">{f[0]}</h3>
+                      <span className="faq-i shrink-0 text-muted">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
+                      </span>
+                    </summary>
+                    <p className="pb-5 pr-8 text-[13.5px] leading-relaxed text-muted">{f[1]}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Game lainnya */}
+        <section className="relative pb-20 sm:pb-28">
+          <div className="wrap">
+            <h2 className="display text-[22px] font-extrabold sm:text-[28px]">Game lainnya</h2>
+            <p className="mt-3 text-[13.5px] text-muted">Mau top up game lain? Pilih dari daftar di bawah.</p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {otherGames.map((x) => {
+                const xFit = x.logoStyle === "fill" ? "object-fill" : "object-contain";
+                return (
+                  <Link
+                    key={x.slug}
+                    href={`/top-up/${x.slug}`}
+                    className="game-card glass flex items-center gap-3 rounded-2xl p-4"
+                  >
+                    <div className="h-10 w-10 shrink-0">
+                      <Image src={x.logo} alt="" width={40} height={40} className={`h-10 w-10 ${xFit}`} />
+                    </div>
+                    <span>
+                      <span className="block text-[13.5px] font-semibold">{x.name}</span>
+                      <span className="block text-[12px] text-muted">{x.cur} &middot; mulai {rpah(x.nominals[0]?.price ?? 0)}</span>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+            <Link href="/game" className="btn-ghost mt-7 inline-block rounded-2xl px-6 py-3.5 text-[14.5px] font-semibold">
+              Lihat semua game
+            </Link>
           </div>
         </section>
       </main>
