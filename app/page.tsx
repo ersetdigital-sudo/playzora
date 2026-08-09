@@ -8,7 +8,7 @@ import { CTASection } from "@/components/sections/CTASection";
 import { Footer } from "@/components/sections/Footer";
 import { faqJsonLd } from "@/lib/json-ld";
 import { GAMES } from "@/lib/games";
-import type { DbGameWithNominals } from "@/lib/db";
+import type { DbGameWithNominals } from "@/types/game";
 
 function gamesFromStatic(): DbGameWithNominals[] {
   return GAMES.map((g, i) => ({

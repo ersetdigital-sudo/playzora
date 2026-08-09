@@ -1,6 +1,6 @@
 import { GamePickForm } from "@/components/ui/GamePickForm";
 import Link from "next/link";
-import type { DbGameWithNominals } from "@/lib/db";
+import type { DbGameWithNominals } from "@/types/game";
 
 interface HeroProps {
   games: DbGameWithNominals[];

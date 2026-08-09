@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { rupiah } from "@/lib/format";
 import { CheckoutOverlay } from "@/components/checkout/CheckoutOverlay";
-import type { DbGameWithNominals } from "@/lib/db";
+import type { DbGameWithNominals } from "@/types/game";
 
 interface GameOrderFormProps {
   game: DbGameWithNominals;

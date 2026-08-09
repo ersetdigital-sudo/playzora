@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import type { DbGameWithNominals } from "@/lib/db";
+import type { DbGameWithNominals } from "@/types/game";
 import { rupiah } from "@/lib/format";
 
 interface GamesSectionProps {
