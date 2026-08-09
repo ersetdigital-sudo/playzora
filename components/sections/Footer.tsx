@@ -18,7 +18,6 @@ export function Footer() {
             <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-muted">
               Platform top up game untuk gamer Indonesia. Cepat, praktis, dan tersedia 24 jam — tanpa login akun game.
             </p>
-            <p className="mt-4 text-[13px] text-muted">playzora.store</p>
           </div>
           <nav>
             <h3 className="display text-[13px] font-bold uppercase tracking-[.16em]">Navigasi</h3>

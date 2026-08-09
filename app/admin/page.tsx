@@ -2,53 +2,29 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import Link from "next/link";
 
 export default async function AdminDashboard() {
-  const supabase = await createSupabaseServerClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { count: gamesCount } = await (supabase.from("games") as any).select("*", { count: "exact", head: true });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { count: pricingCount } = await (supabase.from("pricing") as any).select("*", { count: "exact", head: true });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { count: activeGames } = await (supabase.from("games") as any).select("*", { count: "exact", head: true }).eq("is_active", true);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: qris } = await (supabase.from("settings") as any).select("value").eq("key", "qris_image_url").single() as { data: { value: string } | null };
-
-  const stats = [
-    {
-      label: "Game Aktif",
-      value: activeGames ?? 0,
-      sub: `dari ${gamesCount ?? 0} total`,
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <rect x="2" y="6" width="20" height="12" rx="2" />
-          <path d="M12 12h.01M17 12h.01M7 12h.01" />
-        </svg>
-      ),
-    },
-    {
-      label: "Total Nominal",
-      value: pricingCount ?? 0,
-      sub: "harga tersedia",
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-        </svg>
-      ),
-    },
-    {
-      label: "QRIS",
-      value: qris?.value ? "✓" : "—",
-      sub: qris?.value ? "terkonfigurasi" : "belum diatur",
-      icon: (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-          <rect x="14" y="14" width="3" height="3" />
-          <path d="M21 14h-4v4" />
-        </svg>
-      ),
-    },
+  let stats = [
+    { label: "Game Aktif", value: "—", sub: "jalankan SQL schema", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01M17 12h.01M7 12h.01"/></svg> },
+    { label: "Total Nominal", value: "—", sub: "", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg> },
+    { label: "QRIS", value: "—", sub: "", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><path d="M21 14h-4v4"/></svg> },
   ];
+
+  try {
+    const supabase = await createSupabaseServerClient();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { count: gamesCount } = await (supabase.from("games") as any).select("*", { count: "exact", head: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { count: pricingCount } = await (supabase.from("pricing") as any).select("*", { count: "exact", head: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { count: activeGames } = await (supabase.from("games") as any).select("*", { count: "exact", head: true }).eq("is_active", true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: qris } = await (supabase.from("settings") as any).select("value").eq("key", "qris_image_url").single() as { data: { value: string } | null };
+
+    stats = [
+      { label: "Game Aktif", value: String(activeGames ?? 0), sub: `dari ${gamesCount ?? 0} total`, icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01M17 12h.01M7 12h.01"/></svg> },
+      { label: "Total Nominal", value: String(pricingCount ?? 0), sub: "harga tersedia", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg> },
+      { label: "QRIS", value: qris?.value ? "✓" : "—", sub: qris?.value ? "terkonfigurasi" : "belum diatur", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><path d="M21 14h-4v4"/></svg> },
+    ];
+  } catch {}
 
   return (
     <div>
@@ -71,25 +47,12 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Link
-          href="/admin/games"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition"
-          style={{ background: "linear-gradient(135deg, #8b6dff, #4a2ee0)" }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 5v14M5 12h14" />
-          </svg>
+        <Link href="/admin/games" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition" style={{ background: "linear-gradient(135deg, #8b6dff, #4a2ee0)" }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
           Kelola Games
         </Link>
-        <Link
-          href="/admin/qris"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white/70 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-          </svg>
+        <Link href="/admin/qris" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white/70 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           Kelola QRIS
         </Link>
       </div>
