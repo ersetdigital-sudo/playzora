@@ -1,35 +1,86 @@
-import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { uploadQrisImage, deleteQrisImage } from "./actions";
+"use client";
 
-export default async function AdminQrisPage() {
-  let currentUrl = "";
-  let errorMsg = "";
+import { useState, useEffect } from "react";
+import { createSupabaseClient } from "@/lib/supabase";
 
-  try {
-    const supabase = await createSupabaseServerClient();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = await (supabase.from("settings") as any)
+export default function AdminQrisPage() {
+  const [currentUrl, setCurrentUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    const supabase = createSupabaseClient();
+    supabase
+      .from("settings")
       .select("value")
-      .eq("key", "qris_image_url");
+      .eq("key", "qris_image_url")
+      .then(({ data }) => {
+        const val = data?.[0]?.value;
+        if (typeof val === "string") setCurrentUrl(val);
+        else if (val && typeof val === "object") setCurrentUrl(JSON.stringify(val));
+      })
+      .catch(() => {});
+  }, []);
 
-    const rows = result.data as Array<{ value: unknown }> | null;
-    if (rows && rows.length > 0) {
-      const val = rows[0].value;
-      currentUrl = typeof val === "string" ? val : typeof val === "object" && val !== null ? JSON.stringify(val) : "";
+  const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fileInput = form.elements.namedItem("qris_image") as HTMLInputElement;
+    const file = fileInput?.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setMsg("");
+
+    try {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", "ml_default");
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!data.secure_url) throw new Error(data.error?.message || "Upload gagal");
+
+      const supabase = createSupabaseClient();
+      const { error } = await supabase
+        .from("settings")
+        .upsert({ key: "qris_image_url", value: data.secure_url }, { onConflict: "key" });
+      if (error) throw error.message;
+
+      setCurrentUrl(data.secure_url);
+      setMsg("QRIS berhasil diupdate.");
+    } catch (err: unknown) {
+      setMsg("Gagal: " + (err instanceof Error ? err.message : String(err)));
     }
-  } catch (e: unknown) {
-    errorMsg = e instanceof Error ? e.message : String(e);
-  }
+    setUploading(false);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const supabase = createSupabaseClient();
+      const { error } = await supabase
+        .from("settings")
+        .upsert({ key: "qris_image_url", value: "" }, { onConflict: "key" });
+      if (error) throw error.message;
+      setCurrentUrl("");
+      setMsg("QRIS dihapus.");
+    } catch (err: unknown) {
+      setMsg("Gagal: " + (err instanceof Error ? err.message : String(err)));
+    }
+  };
 
   return (
     <div>
       <h1 className="font-display text-xl font-bold mb-2">QRIS Image</h1>
       <p className="text-sm text-white/40 mb-6">Upload gambar QRIS untuk pembayaran</p>
 
-      {errorMsg && (
-        <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          <p className="font-semibold mb-1">Error</p>
-          <p>{errorMsg}</p>
+      {msg && (
+        <div className="mb-4 rounded-xl border border-white/10 px-4 py-3 text-sm text-white/60">
+          {msg}
         </div>
       )}
 
@@ -41,7 +92,7 @@ export default async function AdminQrisPage() {
           </div>
         )}
 
-        <form action={uploadQrisImage} className="space-y-4">
+        <form onSubmit={handleUpload} className="space-y-4">
           <input
             type="file"
             name="qris_image"
@@ -51,19 +102,21 @@ export default async function AdminQrisPage() {
           />
           <button
             type="submit"
-            className="px-6 py-2.5 rounded-xl text-white text-sm font-bold transition"
+            disabled={uploading}
+            className="px-6 py-2.5 rounded-xl text-white text-sm font-bold transition disabled:opacity-50"
             style={{ background: "linear-gradient(135deg, #8b6dff, #4a2ee0)" }}
           >
-            Upload QRIS
+            {uploading ? "Uploading..." : "Upload QRIS"}
           </button>
         </form>
 
         {currentUrl && (
-          <form action={deleteQrisImage}>
-            <button type="submit" className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/50 hover:text-white transition">
-              Hapus QRIS
-            </button>
-          </form>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white/50 hover:text-white transition"
+          >
+            Hapus QRIS
+          </button>
         )}
       </div>
     </div>
