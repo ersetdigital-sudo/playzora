@@ -66,7 +66,7 @@ export default async function AdminDashboard() {
     <div>
       <div className="mb-6">
         <h1 className="font-display text-xl font-semibold text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-white/35">Ringkasan data Playzora</p>
+        <p className="mt-1 text-sm text-white/50">Ringkasan data Playzora</p>
       </div>
 
       {errorMsg && (
@@ -81,11 +81,11 @@ export default async function AdminDashboard() {
         {stats.map((stat) => (
           <div key={stat.label} className="hairline rounded-2xl p-5 bg-panel">
             <div className="flex items-center justify-between">
-              <p className="text-[11px] uppercase tracking-[.15em] text-white/35">{stat.label}</p>
-              <span className="text-white/20">{stat.icon}</span>
+              <p className="text-[11px] uppercase tracking-[.15em] text-white/50">{stat.label}</p>
+              <span className="text-white/30">{stat.icon}</span>
             </div>
             <p className="mt-3 font-display text-2xl font-semibold violet-text">{stat.value}</p>
-            <p className="mt-1 text-[11px] text-white/25">{stat.sub}</p>
+            <p className="mt-1 text-[11px] text-white/40">{stat.sub}</p>
           </div>
         ))}
       </div>
@@ -102,7 +102,7 @@ export default async function AdminDashboard() {
         </Link>
         <Link
           href="/admin/qris"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white/70 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] transition"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white/80 hover:text-white bg-white/[0.06] hover:bg-white/[0.10] border border-white/[0.08] transition"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="3" y="3" width="7" height="7" />
