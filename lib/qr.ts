@@ -14,12 +14,12 @@ export function drawDemoQR(canvas: HTMLCanvasElement, seed: string | number) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   function finder(x: number, y: number) {
-    ctx.fillStyle = "#0b0b13";
-    ctx.fillRect(x * cell, y * cell, 7 * cell, 7 * cell);
-    ctx.fillStyle = "#fff";
-    ctx.fillRect((x + 1) * cell, (y + 1) * cell, 5 * cell, 5 * cell);
-    ctx.fillStyle = "#0b0b13";
-    ctx.fillRect((x + 2) * cell, (y + 2) * cell, 3 * cell, 3 * cell);
+    ctx!.fillStyle = "#0b0b13";
+    ctx!.fillRect(x * cell, y * cell, 7 * cell, 7 * cell);
+    ctx!.fillStyle = "#fff";
+    ctx!.fillRect((x + 1) * cell, (y + 1) * cell, 5 * cell, 5 * cell);
+    ctx!.fillStyle = "#0b0b13";
+    ctx!.fillRect((x + 2) * cell, (y + 2) * cell, 3 * cell, 3 * cell);
   }
 
   function inFinder(x: number, y: number) {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { logout } from "../actions";
+import { logout } from "./actions";
 import { site } from "@/lib/site";
 
 const NAV = [
