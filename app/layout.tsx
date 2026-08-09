@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.svg" },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={`${manrope.variable} ${sora.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
