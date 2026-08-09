@@ -127,7 +127,6 @@ export default async function TopUpPage({ params }: PageProps) {
                 <span className="glass rounded-full px-3.5 py-1.5">{game.cur} &middot; {game.nominals.length} nominal</span>
                 <span className="glass rounded-full px-3.5 py-1.5">Mulai {rp(game.nominals[0]?.price ?? 0)}</span>
                 <span className="glass rounded-full px-3.5 py-1.5">Pembayaran QRIS</span>
-                <span className="glass rounded-full px-3.5 py-1.5">Mode demo</span>
               </div>
             </div>
           </div>

@@ -163,7 +163,7 @@ export function GameOrderForm({ game, qrisUrl }: GameOrderFormProps) {
         >
           Bayar Sekarang
         </button>
-        <p className="mt-4 text-[11.5px] leading-relaxed text-white/35">Mode demo — tidak ada pembayaran nyata.</p>
+        <p className="mt-4 text-[11.5px] leading-relaxed text-white/35">Harga yang tercantum sudah final tanpa biaya tambahan.</p>
       </div>
 
       {showCheckout && current && (
