@@ -8,17 +8,17 @@ export default async function AdminQrisPage() {
   try {
     const supabase = await createSupabaseServerClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error: dbError } = await (supabase.from("settings") as any)
-      .select("value").eq("key", "qris_image_url") as { data: Array<{ value: string }> | null; error: any };
-    if (dbError) throw dbError;
-    currentUrl = data?.[0]?.value ?? "";
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : String(e);
-    if (msg.includes("relation") && msg.includes("does not exist")) {
-      errorMsg = "Tabel settings belum dibuat. Jalankan SQL schema di Supabase SQL Editor.";
-    } else {
-      errorMsg = msg;
+    const result = await (supabase.from("settings") as any)
+      .select("value")
+      .eq("key", "qris_image_url");
+
+    const rows = result.data as Array<{ value: unknown }> | null;
+    if (rows && rows.length > 0) {
+      const val = rows[0].value;
+      currentUrl = typeof val === "string" ? val : typeof val === "object" && val !== null ? JSON.stringify(val) : "";
     }
+  } catch (e: unknown) {
+    errorMsg = e instanceof Error ? e.message : String(e);
   }
 
   return (
@@ -30,7 +30,6 @@ export default async function AdminQrisPage() {
         <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           <p className="font-semibold mb-1">Error</p>
           <p>{errorMsg}</p>
-          <p className="mt-2 text-white/30">Buka Supabase Dashboard → SQL Editor → jalankan isi file <code>supabase/schema.sql</code></p>
         </div>
       )}
 
