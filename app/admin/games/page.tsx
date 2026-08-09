@@ -3,7 +3,7 @@ import AdminGamesList from "./AdminGamesListClient";
 
 export default async function AdminGamesPage() {
   let games: Array<{ id: string; slug: string; name: string; icon_url: string; is_active: boolean; sort_order: number; range_label: string; nominals: Array<{ id: string; nominal_label: string; price: number }> }> = [];
-  let error = "";
+  let errorMsg = "";
 
   try {
     const supabase = await createSupabaseServerClient();
@@ -14,14 +14,21 @@ export default async function AdminGamesPage() {
     if (dbError) throw dbError;
     games = data ?? [];
   } catch (e: unknown) {
-    error = e instanceof Error ? e.message : "Gagal memuat data game";
+    const msg = e instanceof Error ? e.message : String(e);
+    if (msg.includes("relation") && msg.includes("does not exist")) {
+      errorMsg = "Tabel belum dibuat. Jalankan SQL schema di Supabase SQL Editor.";
+    } else {
+      errorMsg = msg;
+    }
   }
 
   return (
     <div>
-      {error && (
+      {errorMsg && (
         <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          {error}
+          <p className="font-semibold mb-1">Error</p>
+          <p>{errorMsg}</p>
+          <p className="mt-2 text-white/30">Buka Supabase Dashboard → SQL Editor → jalankan isi file <code>supabase/schema.sql</code></p>
         </div>
       )}
       <AdminGamesList games={games} />

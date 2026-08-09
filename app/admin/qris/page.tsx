@@ -3,16 +3,22 @@ import { uploadQrisImage, deleteQrisImage } from "./actions";
 
 export default async function AdminQrisPage() {
   let currentUrl = "";
-  let error = "";
+  let errorMsg = "";
 
   try {
     const supabase = await createSupabaseServerClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data } = await (supabase.from("settings") as any)
-      .select("value").eq("key", "qris_image_url").single() as { data: { value: string } | null };
+    const { data, error: dbError } = await (supabase.from("settings") as any)
+      .select("value").eq("key", "qris_image_url").single() as { data: { value: string } | null; error: any };
+    if (dbError && dbError.code !== "PGRST116") throw dbError;
     currentUrl = data?.value ?? "";
   } catch (e: unknown) {
-    error = e instanceof Error ? e.message : "Gagal memuat data QRIS";
+    const msg = e instanceof Error ? e.message : String(e);
+    if (msg.includes("relation") && msg.includes("does not exist")) {
+      errorMsg = "Tabel settings belum dibuat. Jalankan SQL schema di Supabase SQL Editor.";
+    } else {
+      errorMsg = msg;
+    }
   }
 
   return (
@@ -20,9 +26,11 @@ export default async function AdminQrisPage() {
       <h1 className="font-display text-xl font-bold mb-2">QRIS Image</h1>
       <p className="text-sm text-white/40 mb-6">Upload gambar QRIS untuk pembayaran</p>
 
-      {error && (
+      {errorMsg && (
         <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          {error}
+          <p className="font-semibold mb-1">Error</p>
+          <p>{errorMsg}</p>
+          <p className="mt-2 text-white/30">Buka Supabase Dashboard → SQL Editor → jalankan isi file <code>supabase/schema.sql</code></p>
         </div>
       )}
 
