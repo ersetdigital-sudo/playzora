@@ -5,7 +5,7 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
       <div className="max-w-6xl mx-auto px-5">
-        <nav className="mt-3 flex items-center gap-4 rounded-2xl glass px-4 sm:px-5 py-2.5">
+        <nav className="mt-3 flex items-center gap-4 rounded-2xl px-4 sm:px-5 py-2.5" style={{ background: "rgba(7,7,12,.85)", border: "1px solid rgba(255,255,255,.09)", backdropFilter: "blur(14px)" }}>
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
             <LogoMark className="w-8 h-8" />
             <span className="font-display font-extrabold tracking-[.16em] text-[15px]">
