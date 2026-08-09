@@ -10,11 +10,11 @@ export default function AdminQrisPage() {
 
   useEffect(() => {
     const supabase = createSupabaseClient();
-    supabase
-      .from("settings")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (supabase.from("settings") as any)
       .select("value")
       .eq("key", "qris_image_url")
-      .then(({ data }) => {
+      .then(({ data }: { data: Array<{ value: unknown }> | null }) => {
         const val = data?.[0]?.value;
         if (typeof val === "string") setCurrentUrl(val);
         else if (val && typeof val === "object") setCurrentUrl(JSON.stringify(val));
@@ -46,9 +46,11 @@ export default function AdminQrisPage() {
       if (!data.secure_url) throw new Error(data.error?.message || "Upload gagal");
 
       const supabase = createSupabaseClient();
-      const { error } = await supabase
-        .from("settings")
-        .upsert({ key: "qris_image_url", value: data.secure_url }, { onConflict: "key" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase.from("settings") as any).upsert(
+        { key: "qris_image_url", value: data.secure_url },
+        { onConflict: "key" }
+      );
       if (error) throw error.message;
 
       setCurrentUrl(data.secure_url);
@@ -62,9 +64,11 @@ export default function AdminQrisPage() {
   const handleDelete = async () => {
     try {
       const supabase = createSupabaseClient();
-      const { error } = await supabase
-        .from("settings")
-        .upsert({ key: "qris_image_url", value: "" }, { onConflict: "key" });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase.from("settings") as any).upsert(
+        { key: "qris_image_url", value: "" },
+        { onConflict: "key" }
+      );
       if (error) throw error.message;
       setCurrentUrl("");
       setMsg("QRIS dihapus.");
