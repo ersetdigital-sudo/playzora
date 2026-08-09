@@ -43,7 +43,9 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const game = await getGameBySlug(slug) ?? fallbackGame(slug);
+  let game: DbGameWithNominals | null = null;
+  try { game = await getGameBySlug(slug); } catch {}
+  game = game ?? fallbackGame(slug);
   if (!game) return { title: "Game tidak ditemukan" };
 
   return {
@@ -61,10 +63,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TopUpPage({ params }: PageProps) {
   const { slug } = await params;
-  const game: DbGameWithNominals | null = await getGameBySlug(slug) ?? fallbackGame(slug);
+  let game: DbGameWithNominals | null = null;
+  try { game = await getGameBySlug(slug); } catch {}
+  game = game ?? fallbackGame(slug);
   if (!game) notFound();
 
-  const qrisUrl = await getQrisUrl();
+  let qrisUrl = "";
+  try { qrisUrl = await getQrisUrl(); } catch {}
 
   const crumbs = [
     { label: "Home", href: "/" },

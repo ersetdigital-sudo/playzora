@@ -36,7 +36,8 @@ function fallbackGames(): DbGameWithNominals[] {
 }
 
 export default async function Home() {
-  const dbGames = await getActiveGames();
+  let dbGames: DbGameWithNominals[] = [];
+  try { dbGames = await getActiveGames(); } catch {}
   const games = dbGames.length > 0 ? dbGames : fallbackGames();
 
   return (
