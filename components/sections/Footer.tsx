@@ -4,8 +4,8 @@ import { GAMES } from "@/lib/games";
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-line py-14">
-      <div className="max-w-6xl mx-auto px-5">
+    <footer className="relative border-t border-line py-10 sm:py-14">
+      <div className="max-w-6xl mx-auto px-4 sm:px-5">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_.8fr_.8fr_1fr]">
           <div>
             <Link href="/" className="flex items-center gap-2.5">

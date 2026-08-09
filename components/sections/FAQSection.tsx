@@ -17,8 +17,8 @@ export function FAQSection() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="relative py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto px-5">
+    <section id="faq" className="relative py-12 sm:py-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-5">
         <div className="grid gap-10 lg:grid-cols-[.75fr_1.25fr]">
           <div>
             <p className="text-[12px] uppercase tracking-[.2em]" style={{ color: "#a08bff" }}>FAQ</p>

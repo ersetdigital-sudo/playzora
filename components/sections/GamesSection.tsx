@@ -11,8 +11,8 @@ interface GamesSectionProps {
 
 export function GamesSection({ games }: GamesSectionProps) {
   return (
-    <section id="games" className="relative py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto px-5">
+    <section id="games" className="relative py-12 sm:py-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-5">
         <div className="max-w-2xl">
           <p className="text-[12px] uppercase tracking-[.2em]" style={{ color: "#a08bff" }}>Katalog</p>
           <h2 className="display mt-3 text-[30px] font-extrabold sm:text-[42px]">Pilih Game</h2>

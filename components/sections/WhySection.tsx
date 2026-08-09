@@ -10,8 +10,8 @@ export function WhySection() {
   ];
 
   return (
-    <section className="relative py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto px-5">
+    <section className="relative py-12 sm:py-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-5">
         <div className="grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
           <div className="lg:sticky lg:top-28">
             <p className="text-[12px] uppercase tracking-[.2em]" style={{ color: "#a08bff" }}>Alasan</p>

@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function CTASection() {
   return (
-    <section className="relative py-10 sm:py-16">
-      <div className="max-w-6xl mx-auto px-5">
+    <section className="relative py-8 sm:py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-5">
         <div className="relative overflow-hidden rounded-[32px] px-6 py-14 text-center sm:px-12 sm:py-20" style={{ background: "radial-gradient(120% 130% at 50% 0%,#3a1fbf 0%,#170f3a 45%,#0a0a12 100%)", border: "1px solid rgba(255,255,255,.1)" }}>
           <div className="glow" style={{ width: 420, height: 420, background: "#39e5b6", top: -200, left: "50%", transform: "translateX(-50%)", opacity: 0.22 }} />
           <p className="relative text-[12px] uppercase tracking-[.24em] text-white/55">Siap main?</p>
