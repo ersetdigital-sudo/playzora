@@ -1,0 +1,254 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #07070c;
+  --color-panel: rgba(255, 255, 255, 0.035);
+  --color-raise: #131315;
+  --color-fg: #f4f4f8;
+  --color-muted: #9a9aae;
+  --color-violet: #7c5cff;
+  --color-violet-deep: #4a2ee0;
+  --color-mint: #39e5b6;
+  --color-line: rgba(255, 255, 255, 0.09);
+
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-sora);
+
+  --radius-card: 1.25rem;
+  --shadow-card: 0 24px 60px -30px rgba(124, 92, 255, 0.55);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-fg);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .display {
+    font-family: var(--font-sora);
+    letter-spacing: -0.02em;
+  }
+
+  input, select {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  .grad-text {
+    background: linear-gradient(100deg, #fff 25%, #b9a8ff 60%, #39e5b6 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hairline {
+    border: 1px solid var(--color-line);
+  }
+
+  .glass {
+    background: var(--color-panel);
+    border: 1px solid var(--color-line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .hair {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    height: 1px;
+  }
+
+  .glow {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000, transparent 75%);
+  }
+
+  .card {
+    position: relative;
+    background: linear-gradient(160deg, #141416 0%, #0b0b0c 100%);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.35s,
+      box-shadow 0.35s;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124, 92, 255, 0.45);
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #8b6dff, #4a2ee0);
+    box-shadow: 0 10px 34px -12px rgba(124, 92, 255, 0.85);
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 44px -14px rgba(124, 92, 255, 1);
+  }
+
+  .btn-ghost {
+    border: 1px solid var(--color-line);
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(124, 92, 255, 0.6);
+    background: rgba(124, 92, 255, 0.09);
+    transform: translateY(-2px);
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 96px;
+  }
+  .logo-wrap img {
+    max-height: 78px;
+    max-width: 78%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
+  }
+
+  .h-hero {
+    font-size: clamp(2.15rem, 8.5vw, 4.5rem);
+    line-height: 1.05;
+  }
+  .h-sec {
+    font-size: clamp(1.6rem, 5.4vw, 2.4rem);
+  }
+  .h-cta {
+    font-size: clamp(1.75rem, 6.5vw, 3rem);
+  }
+  .lead {
+    font-size: clamp(0.9rem, 3.6vw, 1.1rem);
+  }
+  .stat-n {
+    font-size: clamp(1.15rem, 5vw, 1.9rem);
+  }
+  .sect {
+    padding-top: clamp(56px, 10vw, 112px);
+    padding-bottom: clamp(56px, 10vw, 112px);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pay-card {
+    width: 100%;
+    background: linear-gradient(170deg, #131315, #0a0a0b);
+    border: 1px solid rgba(124, 92, 255, 0.22);
+    border-radius: 26px;
+    padding: 26px 22px;
+    box-shadow: 0 40px 120px -40px rgba(124, 92, 255, 0.35);
+    animation: sheetIn 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
+  }
+  @keyframes sheetIn {
+    from { opacity: 0; transform: translateY(26px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .qr-frame {
+    position: relative;
+    background: #fff;
+    border-radius: 18px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .qr-frame canvas {
+    width: 190px;
+    height: 190px;
+    image-rendering: pixelated;
+    border-radius: 6px;
+  }
+
+  .timer-ring {
+    width: 46px;
+    height: 46px;
+    transform: rotate(-90deg);
+  }
+  .timer-ring circle {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    background: #39e5b6;
+    box-shadow: 0 0 0 0 rgba(57, 229, 182, 0.6);
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse {
+    70% { box-shadow: 0 0 0 9px rgba(57, 229, 182, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(57, 229, 182, 0); }
+  }
+
+  .check-pop {
+    animation: pop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1);
+  }
+  @keyframes pop {
+    0% { transform: scale(0.4); opacity: 0; }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .conf {
+    position: absolute;
+    top: -10px;
+    width: 7px;
+    height: 12px;
+    border-radius: 2px;
+    animation: fall 2.6s linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(520px) rotate(540deg); opacity: 0; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none; }
+  .card { transition: none; }
+  .pay-card, .check-pop, .pulse-dot, .conf { animation: none; }
+}
