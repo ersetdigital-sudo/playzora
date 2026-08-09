@@ -139,10 +139,10 @@ export default function AdminLoginPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <LogoMark className="w-6 h-6" />
-                  <span className="font-display font-semibold text-white/80 text-sm">Playzora</span>
+                  <span className="font-display font-semibold text-white/90 text-sm">Playzora</span>
                 </div>
-                <div className="flex gap-6 text-[11px] uppercase tracking-[.15em] text-white/30">
-                  <span className="text-[#7c5cff]/60">Admin</span>
+                <div className="flex gap-6 text-[11px] uppercase tracking-[.15em] text-white/50">
+                  <span className="text-[#7c5cff]">Admin</span>
                   <span>Panel</span>
                 </div>
               </div>
@@ -150,13 +150,13 @@ export default function AdminLoginPage() {
               {/* Center text */}
               <div className="flex-1 flex items-center">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[.3em] text-[#7c5cff]/40 mb-3">Dashboard</p>
-                  <h2 className="font-display text-4xl font-bold text-white/90 leading-tight">
+                  <p className="text-[10px] uppercase tracking-[.3em] text-[#7c5cff]/60 mb-3">Dashboard</p>
+                  <h2 className="font-display text-4xl font-bold text-white/95 leading-tight">
                     Kelola <span className="violet-text">Playzora</span>
                     <br />
                     Dengan Mudah
                   </h2>
-                  <p className="mt-4 text-sm text-white/30 leading-relaxed max-w-sm">
+                  <p className="mt-4 text-sm text-white/50 leading-relaxed max-w-sm">
                     kelola game, harga, dan pembayaran dalam satu panel terintegrasi.
                   </p>
                 </div>
@@ -164,10 +164,10 @@ export default function AdminLoginPage() {
 
               {/* Bottom arrows */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/30 hover:text-white/60 hover:border-white/20 transition cursor-pointer">
+                <div className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white/80 hover:border-white/30 transition cursor-pointer">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
                 </div>
-                <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/30 hover:text-white/60 hover:border-white/20 transition cursor-pointer">
+                <div className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:text-white/80 hover:border-white/30 transition cursor-pointer">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
                 </div>
               </div>
@@ -180,11 +180,11 @@ export default function AdminLoginPage() {
           <div className="w-full max-w-[340px]">
             {/* Brand */}
             <div className="mb-8">
-              <p className="text-[10px] uppercase tracking-[.3em] text-[#7c5cff]/50 mb-2">Admin Panel</p>
+              <p className="text-[10px] uppercase tracking-[.3em] text-[#7c5cff] mb-2">Admin Panel</p>
               <h1 className="font-display text-2xl font-bold text-white">
                 Hi, <span className="violet-text">Admin</span>
               </h1>
-              <p className="mt-1 text-sm text-white/30">Welcome to Playzora Admin</p>
+              <p className="mt-1 text-sm text-white/50">Welcome to Playzora Admin</p>
             </div>
 
             {/* Form */}
@@ -203,7 +203,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
                   required
-                  className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-[#7c5cff]/40 focus:bg-white/[0.05] transition-all duration-200"
+                  className="w-full bg-white/[0.06] border border-white/[0.12] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/40 outline-none focus:border-[#7c5cff]/60 focus:bg-white/[0.08] transition-all duration-200"
                 />
               </div>
 
@@ -215,11 +215,11 @@ export default function AdminLoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     required
-                    className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/25 outline-none focus:border-[#7c5cff]/40 focus:bg-white/[0.05] transition-all duration-200"
+                    className="w-full bg-white/[0.06] border border-white/[0.12] rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/40 outline-none focus:border-[#7c5cff]/60 focus:bg-white/[0.08] transition-all duration-200"
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-white/30 hover:text-[#7c5cff]/60 transition"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-white/50 hover:text-[#7c5cff] transition"
                   >
                     Lupa password?
                   </button>
@@ -232,7 +232,7 @@ export default function AdminLoginPage() {
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 bg-white/[0.04] border border-white/[0.08] rounded-xl py-3 text-sm text-white/60 hover:bg-white/[0.08] hover:text-white/80 transition-all duration-200 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-3 bg-white/[0.06] border border-white/[0.12] rounded-xl py-3 text-sm text-white/70 hover:bg-white/[0.10] hover:text-white/90 transition-all duration-200 disabled:opacity-50"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -268,18 +268,18 @@ export default function AdminLoginPage() {
               </div>
 
               {/* Signup link */}
-              <p className="text-center text-xs text-white/25 pt-2">
+              <p className="text-center text-xs text-white/40 pt-2">
                 Belum punya akses?{" "}
-                <span className="text-[#7c5cff]/60 hover:text-[#7c5cff] cursor-pointer transition">Hubungi developer</span>
+                <span className="text-[#7c5cff] hover:text-[#7c5cff]/80 cursor-pointer transition">Hubungi developer</span>
               </p>
             </form>
 
             {/* Social icons */}
-            <div className="flex items-center justify-center gap-4 mt-8 pt-6 border-t border-white/[0.04]">
+            <div className="flex items-center justify-center gap-4 mt-8 pt-6 border-t border-white/[0.08]">
               {["F", "T", "L", "I"].map((icon, i) => (
                 <div
                   key={i}
-                  className="w-8 h-8 rounded-full bg-white/[0.04] flex items-center justify-center text-white/20 hover:text-white/50 hover:bg-white/[0.08] transition cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-white/[0.10] transition cursor-pointer"
                 >
                   <span className="text-[10px] font-medium">{icon}</span>
                 </div>
