@@ -7,8 +7,35 @@ import { Footer } from "@/components/sections/Footer";
 import { GameOrderForm } from "@/components/sections/GameOrderForm";
 import { Breadcrumb, breadcrumbJsonLd } from "@/components/ui/Breadcrumb";
 import { site } from "@/lib/site";
-import { getGameBySlug, getQrisUrl } from "@/lib/db";
-import type { DbGameWithNominals } from "@/lib/db";
+import { getGameBySlug, getQrisUrl, type DbGameWithNominals } from "@/lib/db";
+import { GAMES } from "@/lib/games";
+
+function fallbackGame(slug: string): DbGameWithNominals | null {
+  const g = GAMES.find((x) => x.slug === slug);
+  if (!g) return null;
+  return {
+    id: `fallback-${slug}`,
+    slug: g.slug,
+    name: g.name,
+    icon_url: g.logo,
+    icon_width: g.logoWidth,
+    icon_height: g.logoHeight,
+    range_label: g.range,
+    user_id_label: "ID Pengguna",
+    user_id_placeholder: "12345678",
+    server_id_label: "Server ID",
+    server_id_placeholder: "1000",
+    server_id_required: false,
+    hide_server_id: false,
+    nominals: g.nominals.map((n, j) => ({
+      id: `fn-${slug}-${j}`,
+      game_id: `fallback-${slug}`,
+      nominal_label: n.label,
+      price: n.price,
+      sort_order: j,
+    })),
+  };
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -16,7 +43,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const game = await getGameBySlug(slug);
+  const game = await getGameBySlug(slug) ?? fallbackGame(slug);
   if (!game) return { title: "Game tidak ditemukan" };
 
   return {
@@ -34,7 +61,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TopUpPage({ params }: PageProps) {
   const { slug } = await params;
-  const game: DbGameWithNominals | null = await getGameBySlug(slug);
+  const game: DbGameWithNominals | null = await getGameBySlug(slug) ?? fallbackGame(slug);
   if (!game) notFound();
 
   const qrisUrl = await getQrisUrl();
